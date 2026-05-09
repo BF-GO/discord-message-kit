@@ -351,6 +351,11 @@ debug@^4.4.0:
   dependencies:
     ms "^2.1.3"
 
+discord-markdown-parser@1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/discord-markdown-parser/-/discord-markdown-parser-1.3.1.tgz#f96f0464b790d5e417d47c6ceefe4541f3547172"
+  integrity sha512-YHLMi+9W4KSO27uW8D7DX6S9uu/M7qntmkUIxMSsJrxwtxfdcHA55fcLoRkBFyxXdxi2PKRqC3Z7MXLMS4XP9Q==
+
 esbuild@^0.27.0:
   version "0.27.7"
   resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.27.7.tgz#bcadce22b2f3fd76f257e3a64f83a64986fea11f"

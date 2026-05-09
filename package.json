@@ -1,7 +1,7 @@
 {
   "name": "@bf-go/discord-message-kit",
   "version": "1.0.0",
-  "description": "React and Next.js components for Discord style messages, mentions, and embeds.",
+  "description": "React and Next.js visual preview components for Discord-like messages, markdown, embeds, and components.",
   "keywords": [
     "discord",
     "discordui",
@@ -53,8 +53,12 @@
   "scripts": {
     "build": "tsup && node scripts/copy-style.mjs",
     "dev": "tsup --watch",
+    "test": "yarn build && node --test tests/*.test.mjs",
     "typecheck": "tsc --noEmit",
     "prepack": "yarn build"
+  },
+  "dependencies": {
+    "discord-markdown-parser": "1.3.1"
   },
   "peerDependencies": {
     "react": ">=18.2.0 <20.0.0"

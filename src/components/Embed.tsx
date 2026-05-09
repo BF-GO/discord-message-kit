@@ -1,10 +1,22 @@
 import type { ReactNode } from 'react'
+import { useContext } from 'react'
+import Markdown from './Markdown.js'
+import DefaultOptions from '../context/DefaultOptions.js'
+import OptionsContext from '../context/OptionsContext.js'
 import type { EmbedProps } from '../types.js'
-import { parseTimestamp, splitSlots } from '../util.js'
+import {
+	normalizeMarkdownMode,
+	parseTimestamp,
+	resolveTimestampOptions,
+	safeLinkUrl,
+	safeMediaUrl,
+	splitSlots,
+} from '../util.js'
 
 function linkedText(content: ReactNode, url?: string) {
 	if (!content) return null
-	return url ? <a href={url} target="_blank" rel="noopener noreferrer">{content}</a> : <span>{content}</span>
+	const href = safeLinkUrl(url)
+	return href ? <a href={href} target="_blank" rel="noopener noreferrer">{content}</a> : <span>{content}</span>
 }
 
 export default function Embed({
@@ -16,15 +28,31 @@ export default function Embed({
 	embedTitle,
 	footerImage,
 	image,
+	locale,
+	markdown,
 	thumbnail,
 	timestamp,
+	timeZone,
 	title,
+	timestampFormat,
 	url,
 }: EmbedProps) {
+	const options = useContext(OptionsContext) || DefaultOptions
 	const { body, slots } = splitSlots(children, ['fields', 'footer'] as const)
 	const resolvedTitle = title || embedTitle
-	const displayedAt = timestamp ? parseTimestamp(timestamp) : ''
-	const hasFooter = Boolean(slots.footer || displayedAt)
+	const displayedAt = timestamp ? parseTimestamp(timestamp, resolveTimestampOptions(options, { locale, timeZone, timestampFormat })) : ''
+	const footer = slots.footer[0]
+	const hasFooter = Boolean(footer || displayedAt)
+	const markdownMode = normalizeMarkdownMode(markdown)
+	const description = markdownMode ? (
+		<Markdown mode={markdownMode} locale={locale} timeZone={timeZone} timestampFormat={timestampFormat}>
+			{body}
+		</Markdown>
+	) : body
+	const authorImageSource = safeMediaUrl(authorImage)
+	const footerImageSource = safeMediaUrl(footerImage)
+	const imageSource = safeMediaUrl(image)
+	const thumbnailSource = safeMediaUrl(thumbnail)
 
 	return (
 		<div className="dmk-embed">
@@ -34,7 +62,7 @@ export default function Embed({
 					<div className="dmk-embed-copy">
 						{authorName ? (
 							<div className="dmk-embed-author">
-								{authorImage ? <img src={authorImage} alt="" className="dmk-author-image" /> : null}
+								{authorImageSource ? <img src={authorImageSource} alt="" className="dmk-author-image" /> : null}
 								{linkedText(authorName, authorUrl)}
 							</div>
 						) : null}
@@ -43,18 +71,18 @@ export default function Embed({
 								{linkedText(resolvedTitle, url)}
 							</div>
 						) : null}
-						<div className="dmk-embed-description">{body}</div>
+						<div className="dmk-embed-description">{description}</div>
 						{slots.fields}
-						{image ? <img src={image} alt="" className="dmk-embed-image" /> : null}
+						{imageSource ? <img src={imageSource} alt="" className="dmk-embed-image" /> : null}
 					</div>
-					{thumbnail ? <img src={thumbnail} alt="" className="dmk-embed-thumbnail" /> : null}
+					{thumbnailSource ? <img src={thumbnailSource} alt="" className="dmk-embed-thumbnail" /> : null}
 				</div>
 				{hasFooter ? (
 					<div className="dmk-embed-footer">
-						{slots.footer && footerImage ? <img src={footerImage} alt="" className="dmk-footer-image" /> : null}
+						{footer && footerImageSource ? <img src={footerImageSource} alt="" className="dmk-footer-image" /> : null}
 						<span>
-							{slots.footer}
-							{slots.footer && displayedAt ? <span className="dmk-footer-separator">&bull;</span> : null}
+							{footer}
+							{footer && displayedAt ? <span className="dmk-footer-separator">&bull;</span> : null}
 							{displayedAt ? <span>{displayedAt}</span> : null}
 						</span>
 					</div>

@@ -33,7 +33,9 @@ const DefaultOptions: Options = {
 	},
 	defaultMode: 'comfy',
 	defaultTheme: 'dark',
-	disableFont: true,
+	defaultTimestampFormat: 'd',
+	disableFont: false,
+	entities: {},
 	profiles: {},
 }
 

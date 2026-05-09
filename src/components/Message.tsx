@@ -1,9 +1,10 @@
 import { Children, Fragment, isValidElement, useContext, type ReactNode } from 'react'
 import AuthorInfo from './AuthorInfo.js'
+import Markdown from './Markdown.js'
 import DefaultOptions from '../context/DefaultOptions.js'
 import OptionsContext from '../context/OptionsContext.js'
 import type { MessageProps, Profile } from '../types.js'
-import { classNames, parseTimestamp, splitSlots } from '../util.js'
+import { classNames, normalizeMarkdownMode, parseTimestamp, resolveTimestampOptions, splitSlots } from '../util.js'
 
 function isHighlightedMention(child: ReactNode) {
 	if (!isValidElement(child)) return false
@@ -27,9 +28,13 @@ export default function Message({
 	children,
 	compactMode,
 	edited,
+	locale,
+	markdown,
 	profile: profileKey,
 	roleColor,
 	timestamp,
+	timeZone,
+	timestampFormat,
 }: MessageProps) {
 	const options = useContext(OptionsContext) || DefaultOptions
 	const profile = resolveProfile({ author, avatar, bot, roleColor }, profileKey, options.profiles)
@@ -37,9 +42,15 @@ export default function Message({
 	const resolvedAvatar = avatarSource
 		? options.avatars[avatarSource] || avatarSource
 		: options.avatars.default
-	const displayedAt = parseTimestamp(timestamp)
+	const displayedAt = parseTimestamp(timestamp, resolveTimestampOptions(options, { locale, timeZone, timestampFormat }))
 	const { body, slots } = splitSlots(children, ['embeds'] as const)
 	const highlighted = Children.toArray(body).some(isHighlightedMention)
+	const markdownMode = normalizeMarkdownMode(markdown)
+	const bodyContent = markdownMode ? (
+		<Markdown mode={markdownMode} locale={locale} timeZone={timeZone} timestampFormat={timestampFormat}>
+			{body}
+		</Markdown>
+	) : body
 
 	const authorBlock = compactMode ? (
 		<Fragment>
@@ -62,10 +73,10 @@ export default function Message({
 				{compactMode ? null : authorBlock}
 				<div className="dmk-message-body">
 					{compactMode ? authorBlock : null}
-					{body}
+					{bodyContent}
 					{edited ? <span className="dmk-message-edited">(edited)</span> : null}
 				</div>
-				{slots.embeds}
+				{slots.embeds.slice(0, 10)}
 			</div>
 		</div>
 	)

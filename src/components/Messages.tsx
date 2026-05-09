@@ -19,6 +19,7 @@ export default function Messages({ children, compactMode, lightTheme }: Messages
 			'dmk-messages',
 			resolvedLightTheme && 'dmk-light-theme',
 			resolvedCompactMode && 'dmk-compact-mode',
+			options.disableFont && 'dmk-disable-font',
 		)}>
 			{messages}
 		</div>
