@@ -1,0 +1,69 @@
+{
+  "name": "@bf-go/discord-message-kit",
+  "version": "1.0.0",
+  "description": "React and Next.js components for Discord style messages, mentions, and embeds.",
+  "keywords": [
+    "discord",
+    "discordui",
+    "message",
+    "messages",
+    "fake",
+    "mock",
+    "react",
+    "next",
+    "nextjs",
+    "component",
+    "embed"
+  ],
+  "homepage": "https://github.com/BF-GO/discord-message-kit#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BF-GO/discord-message-kit.git"
+  },
+  "author": "BF-GO",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "style": "./dist/style.css",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./style.css": "./dist/style.css",
+    "./styles.css": "./dist/style.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": [
+    "./dist/style.css",
+    "*.css"
+  ],
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "packageManager": "yarn@1.22.22",
+  "scripts": {
+    "build": "tsup && node scripts/copy-style.mjs",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "prepack": "yarn build"
+  },
+  "peerDependencies": {
+    "react": ">=18.2.0 <20.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.14",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "tsup": "8.5.1",
+    "typescript": "6.0.3"
+  }
+}
