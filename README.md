@@ -7,9 +7,11 @@ This package is not affiliated with, endorsed by, or sponsored by Discord. It is
 ## Install
 
 ```sh
+npm install @bf-go/discord-message-kit
+# or
 yarn add @bf-go/discord-message-kit
 # or
-npm install @bf-go/discord-message-kit
+pnpm add @bf-go/discord-message-kit
 ```
 
 Import the package stylesheet once from your app-level CSS entry.
